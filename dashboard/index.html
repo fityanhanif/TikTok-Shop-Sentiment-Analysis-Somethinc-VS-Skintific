@@ -1,534 +1,912 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TikTok Shop Sentiment — Somethinc vs Skintific</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="css/styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Somethinc × Skintific — Sentiment Breakdown</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F7F2EE;
+  --paper:#FFFFFF;
+  --ink:#1C1B1F;
+  --mute:#7A767C;
+  --line:#E5E0DC;
+  --som:#DC4A6B;
+  --som-light:#FDEBF0;
+  --skn:#7A5CF0;
+  --skn-light:#F1ECFF;
+  --pos:#2E9B5E;
+  --neg:#D94848;
+  --neu:#D4A026;
+  --radius:16px;
+  --radius-sm:10px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── HERO ── */
+.hero{
+  padding:4rem 3rem 3rem;
+  max-width:1300px;
+  margin:0 auto;
+}
+.hero-label{
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--mute);
+  margin-bottom:1rem;
+}
+.hero h1{
+  font-size:48px;
+  font-weight:800;
+  letter-spacing:-1.5px;
+  line-height:1.1;
+  margin-bottom:0.5rem;
+}
+.hero h1 .som{color:var(--som)}
+.hero h1 .skn{color:var(--skn)}
+.hero h1 .dim{color:var(--mute)}
+.hero-sub{
+  font-size:16px;
+  color:var(--mute);
+  font-weight:400;
+  line-height:1.5;
+  max-width:600px;
+  margin-bottom:2rem;
+}
+
+/* ── VERDICT BANNER ── */
+.verdict{
+  display:flex;
+  gap:3rem;
+  align-items:stretch;
+  padding:2rem 0;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  margin-bottom:3rem;
+  flex-wrap:wrap;
+}
+.verdict-brand{
+  flex:1;
+  min-width:280px;
+  padding:1.5rem 1.8rem;
+  border-radius:var(--radius);
+  position:relative;
+  overflow:hidden;
+}
+.verdict-brand.som{background:var(--som-light)}
+.verdict-brand.skn{background:var(--skn-light)}
+.verdict-brand::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:4px;
+}
+.verdict-brand.som::before{background:var(--som)}
+.verdict-brand.skn::before{background:var(--skn)}
+.verdict-brand h3{
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.verdict-brand.som h3{color:var(--som)}
+.verdict-brand.skn h3{color:var(--skn)}
+.verdict-row{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.verdict-score{
+  font-size:42px;
+  font-weight:800;
+  letter-spacing:-1px;
+  line-height:1;
+}
+.verdict-brand.som .verdict-score{color:var(--som)}
+.verdict-brand.skn .verdict-score{color:var(--skn)}
+.verdict-label{
+  font-size:13px;
+  color:var(--mute);
+  font-weight:500;
+}
+.verdict-bar{
+  margin-top:12px;
+  height:6px;
+  background:var(--line);
+  border-radius:99px;
+  overflow:hidden;
+  position:relative;
+}
+.verdict-bar-fill{
+  height:100%;
+  border-radius:99px;
+  transition:width 1s ease;
+}
+.som .verdict-bar-fill{background:var(--som)}
+.skn .verdict-bar-fill{background:var(--skn)}
+
+/* ── WINNER TAG ── */
+.winner-tag{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+  padding:3px 10px;
+  border-radius:99px;
+  margin-top:8px;
+}
+.winner-tag.som{background:var(--som);color:#fff}
+.winner-tag.skn{background:var(--skn);color:#fff}
+.winner-tag.draw{background:var(--line);color:var(--mute)}
+
+/* ── MAIN ── */
+.main{
+  max-width:1300px;
+  margin:0 auto;
+  padding:0 3rem 4rem;
+}
+
+/* ── SECTION ── */
+.sec{margin-bottom:4rem}
+.sec-header{
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+  margin-bottom:1.5rem;
+}
+.sec-header h2{
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:-0.3px;
+}
+.sec-header .sec-accent{
+  width:4px;height:24px;
+  border-radius:99px;
+  flex-shrink:0;
+}
+.sec-header p{font-size:13px;color:var(--mute);margin-top:2px}
+
+/* ── GRIDS ── */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+
+/* ── CARD ── */
+.card{
+  background:var(--paper);
+  border-radius:var(--radius);
+  padding:1.5rem;
+  border:1px solid var(--line);
+  transition:box-shadow .3s,transform .3s;
+}
+.card:hover{
+  box-shadow:0 8px 24px rgba(0,0,0,0.06);
+  transform:translateY(-2px);
+}
+.card-title{
+  font-size:11px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.8px;
+  color:var(--mute);
+  margin-bottom:1rem;
+}
+.chart-box{position:relative;width:100%;min-height:220px}
+canvas{width:100%!important}
+
+/* ── INSIGHT ── */
+.insight{
+  display:flex;gap:10px;
+  padding:14px;margin-top:14px;
+  border-radius:var(--radius-sm);
+  font-size:13px;line-height:1.6;
+}
+.insight strong{font-weight:600}
+.insight.som{background:var(--som-light);border-left:3px solid var(--som)}
+.insight.skn{background:var(--skn-light);border-left:3px solid var(--skn)}
+.insight.green{background:#ECF7F1;border-left:3px solid var(--pos)}
+.insight.red{background:#FDEAEA;border-left:3px solid var(--neg)}
+.insight.amber{background:#FEF5E0;border-left:3px solid var(--neu)}
+.insight-icon{flex-shrink:0;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.insight.som .insight-icon{background:var(--som);color:#fff}
+.insight.skn .insight-icon{background:var(--skn);color:#fff}
+.insight.green .insight-icon{background:var(--pos);color:#fff}
+.insight.red .insight-icon{background:var(--neg);color:#fff}
+.insight.amber .insight-icon{background:var(--neu);color:#fff}
+.insight-icon{content:'i';font-style:italic;font-family:Georgia,serif}
+
+/* ── STAT PILLS ── */
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pills span{
+  font-size:10px;font-weight:500;
+  padding:4px 12px;border-radius:99px;
+  background:var(--bg);color:var(--mute);
+}
+.stat-group{display:flex;gap:8px;flex-wrap:wrap}
+.stat-box{
+  flex:1;min-width:70px;
+  background:var(--bg);border-radius:var(--radius-sm);
+  padding:12px;text-align:center;
+}
+.stat-box .num{font-size:22px;font-weight:700}
+.stat-box .lbl{font-size:10px;color:var(--mute);margin-top:2px;font-weight:500}
+.stat-box.som .num{color:var(--som)}
+.stat-box.skn .num{color:var(--skn)}
+
+/* ── BADGE ── */
+.badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:600;
+  padding:4px 12px;border-radius:99px;
+}
+.badge.som{background:var(--som);color:#fff}
+.badge.skn{background:var(--skn);color:#fff}
+.badge.outline{border:1.5px solid;background:transparent}
+.badge.outline.som{color:var(--som);border-color:var(--som)}
+.badge.outline.skn{color:var(--skn);border-color:var(--skn)}
+.badge.green{background:var(--pos);color:#fff}
+.badge.neu{background:var(--neu);color:#fff}
+.badge.red{background:var(--neg);color:#fff}
+.badge.xs{padding:2px 8px;font-size:10px}
+
+/* ── ARCH FLOW ── */
+.arch{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}
+.arch-node{
+  border-radius:var(--radius-sm);padding:12px 16px;
+  text-align:center;min-width:90px;flex:1;
+  border:1px solid transparent;transition:.2s;
+}
+.arch-node:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+.arch-node .lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.arch-node .val{font-size:13px;font-weight:700;margin-top:3px}
+.arch-arr{font-size:14px;color:var(--mute);flex-shrink:0}
+
+/* ── DATA TABLE ── */
+.data-table{
+  width:100%;border-collapse:separate;border-spacing:0;
+  font-size:13px;
+}
+.data-table th{
+  text-align:left;font-size:10px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.6px;
+  color:var(--mute);padding:10px 12px 6px;
+  border-bottom:1px solid var(--line);
+}
+.data-table td{padding:10px 12px;border-bottom:1px solid rgba(0,0,0,0.04)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--bg)}
+
+/* ── FOOTER ── */
+.footer{
+  text-align:center;padding:2rem;
+  font-size:12px;color:var(--mute);
+  border-top:1px solid var(--line);
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1000px){
+  .hero h1{font-size:36px}
+  .hero{padding:3rem 2rem 2rem}
+  .main{padding:0 2rem 3rem}
+  .grid-3,.grid-4{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){
+  .hero h1{font-size:28px}
+  .hero,.main{padding:2rem 1.2rem}
+  .grid-3,.grid-2,.grid-4{grid-template-columns:1fr}
+  .verdict{flex-direction:column;gap:1rem}
+}
+</style>
 </head>
 <body>
-  <!-- ═══ HEADER ═══ -->
-  <header class="dash-header">
-    <div class="dash-header-left">
-      <div class="dash-logo">TS</div>
-      <div class="dash-title">
-        <h1>TikTok Shop Sentiment Analyzer</h1>
-        <span>Somethinc vs Skintific · Data Analyst Project</span>
+
+<div class="hero">
+  <div class="hero-label">🔬 TikTok Shop Sentiment Analysis</div>
+  <h1>
+    <span class="som">Somethinc</span>
+    <span class="dim">vs</span>
+    <span class="skn">Skintific</span>
+  </h1>
+  <p class="hero-sub">
+    Perbandingan 2.000 ulasan dari TikTok Shop — sentimen, rating, keluhan, 
+    dan pola afiliasi. Dibangun dengan Scraping Tokopedia + NLP.
+  </p>
+
+  <div class="verdict" id="verdict-area">
+    <div class="verdict-brand som">
+      <h3>Somethinc</h3>
+      <div class="verdict-row">
+        <span class="verdict-score" id="v-som-rating">—</span>
+        <span class="verdict-label">avg rating</span>
+      </div>
+      <div class="verdict-row">
+        <span class="verdict-score" id="v-som-pos" style="font-size:28px">—</span>
+        <span class="verdict-label">positif</span>
+        <span class="badge xs outline som" id="v-som-badge">—</span>
+      </div>
+      <div class="verdict-bar"><div class="verdict-bar-fill" id="v-som-bar" style="width:0%"></div></div>
+    </div>
+
+    <div class="verdict-brand skn">
+      <h3>Skintific</h3>
+      <div class="verdict-row">
+        <span class="verdict-score" id="v-skn-rating">—</span>
+        <span class="verdict-label">avg rating</span>
+      </div>
+      <div class="verdict-row">
+        <span class="verdict-score" id="v-skn-pos" style="font-size:28px">—</span>
+        <span class="verdict-label">positif</span>
+        <span class="badge xs outline skn" id="v-skn-badge">—</span>
+      </div>
+      <div class="verdict-bar"><div class="verdict-bar-fill" id="v-skn-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ═══ OVERVIEW ═══ -->
+  <div class="sec" id="overview">
+    <div class="sec-header">
+      <div class="sec-accent" style="background:var(--som)"></div>
+      <div>
+        <h2>Ringkasan Sentimen</h2>
+        <p>Distribusi sentimen &amp; rating comparison</p>
       </div>
     </div>
-    <div class="dash-header-right">
-      <span class="badge badge-somethinc">Somethinc</span>
-      <span class="badge badge-skintific">Skintific</span>
-      <span style="font-size:12px;color:var(--text-muted);">2,000 reviews</span>
+
+    <div class="grid-4" id="kpi-grid">
+      <div class="card"><div class="card-title">Total Ulasan</div><div class="stat-row" id="kpi-total" style="font-size:32px;font-weight:800">—</div></div>
+      <div class="card"><div class="card-title">Positif</div><div class="stat-row" id="kpi-pos" style="font-size:32px;font-weight:800;color:var(--pos)">—</div></div>
+      <div class="card"><div class="card-title">Netral</div><div class="stat-row" id="kpi-neu" style="font-size:32px;font-weight:800;color:var(--neu)">—</div></div>
+      <div class="card"><div class="card-title">Negatif</div><div class="stat-row" id="kpi-neg" style="font-size:32px;font-weight:800;color:var(--neg)">—</div></div>
     </div>
-  </header>
 
-  <!-- ═══ TAB NAV ═══ -->
-  <nav class="tab-nav">
-    <button class="tab-btn active" data-tab="tab-overview" onclick="void(0)">📊 Overview</button>
-    <button class="tab-btn" data-tab="tab-products" onclick="void(0)">🧴 Product Analysis</button>
-    <button class="tab-btn" data-tab="tab-competitive" onclick="void(0)">🏆 Competitive</button>
-    <button class="tab-btn" data-tab="tab-operations" onclick="void(0)">📦 Operations</button>
-    <button class="tab-btn" data-tab="tab-pricing" onclick="void(0)">💰 Price & Affiliate</button>
-    <button class="tab-btn" data-tab="tab-anomaly" onclick="void(0)">🔍 Anomaly & Trends</button>
-    <button class="tab-btn" data-tab="tab-customer" onclick="void(0)">❤️ Customer Insights</button>
-    <button class="tab-btn" data-tab="tab-recommendations" onclick="void(0)">🎯 Rekomendasi</button>
-  </nav>
-
-  <!-- ═══ MAIN ═══ -->
-  <main class="dash-main" id="dash-content">
-
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- TAB 1: OVERVIEW -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <section class="tab-content active" id="tab-overview">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">📊 Sentiment Overview</h2>
-          <p class="section-subtitle">Ringkasan sentimen TikTok Shop — Somethinc vs Skintific</p>
-        </div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title">Distribusi Sentimen</div>
+        <div class="chart-box" style="max-height:250px;display:flex;justify-content:center"><canvas id="c-overview-sent"></canvas></div>
       </div>
-
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-label">Total Reviews</div>
-          <div class="kpi-value" id="kpi-total-reviews">—</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Somethinc Avg Rating</div>
-          <div class="kpi-value" id="kpi-som-rating" style="color:var(--accent-cyan);">—</div>
-          <div class="kpi-delta" id="kpi-som-delta"></div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Skintific Avg Rating</div>
-          <div class="kpi-value" id="kpi-skn-rating" style="color:var(--accent-purple);">—</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">⚠️ Anomali Terdeteksi</div>
-          <div class="kpi-value" id="kpi-anomalies" style="color:var(--accent-red);">—</div>
-        </div>
+      <div class="card">
+        <div class="card-title">Rating Distribution</div>
+        <div class="chart-box"><canvas id="c-overview-rating"></canvas></div>
       </div>
-
-      <div class="chart-grid">
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-green);"></span> Distribusi Sentimen</div>
-          <div style="max-height:260px;display:flex;justify-content:center;"><canvas id="chart-sentiment-dist" height="260" style="max-width:320px;"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-cyan);"></span> Brand Comparison</div>
-          <canvas id="chart-brand-compare" height="260"></canvas>
-        </div>
-        <div class="chart-card" style="grid-column:span 1;">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-yellow);"></span> Rating Distribution</div>
-          <canvas id="chart-rating-dist" height="260"></canvas>
-        </div>
+      <div class="card">
+        <div class="card-title">Brand Comparison</div>
+        <div class="chart-box"><canvas id="c-overview-brand"></canvas></div>
+        <div class="insight green" id="insight-brand"><div class="insight-icon">i</div><span>Memuat...</span></div>
       </div>
+    </div>
+  </div>
 
-      <div class="insight-grid" id="overview-insights">
-        <div class="insight-card"><div class="insight-card-header"><div class="insight-icon" style="background:rgba(34,197,94,0.15);">📊</div><h4>Memuat...</h4></div><p>Menunggu data...</p></div>
+  <!-- ═══ COMPETITIVE ═══ -->
+  <div class="sec" id="competitive">
+    <div class="sec-header">
+      <div class="sec-accent" style="background:var(--skn)"></div>
+      <div>
+        <h2>Competitive Benchmark</h2>
+        <p>Perbandingan aspek, kata pujian &amp; keluhan</p>
       </div>
-    </section>
+    </div>
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- TAB 2: PRODUCT ANALYSIS -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <section class="tab-content" id="tab-products">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">🧴 Product Analysis</h2>
-          <p class="section-subtitle">1. Peningkatan Produk · 3. Evaluasi Fitur</p>
-        </div>
+    <div class="grid-3">
+      <div class="card" style="grid-column:span 2">
+        <div class="card-title">Aspect Sentiment Radar</div>
+        <div class="chart-box"><canvas id="c-comp-radar"></canvas></div>
       </div>
-
-      <div class="alert alert-info">🔬 Analisis per produk: tingkat komplain, aspek paling bermasalah, dan saran perbaikan.</div>
-
-      <div class="chart-grid">
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-cyan);"></span> Somethinc — Negatif % per Produk</div>
-          <canvas id="chart-som-product-issues" height="300"></canvas>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-purple);"></span> Skintific — Negatif % per Produk</div>
-          <canvas id="chart-skn-product-issues" height="300"></canvas>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-cyan);"></span> Somethinc — Aspek Komplain Matrix</div>
-          <canvas id="chart-feature-heatmap-som" height="250"></canvas>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-purple);"></span> Skintific — Aspek Komplain Matrix</div>
-          <canvas id="chart-feature-heatmap-skn" height="250"></canvas>
-        </div>
+      <div class="card">
+        <div class="card-title">Sentiment Gap</div>
+        <div class="chart-box"><canvas id="c-comp-gap"></canvas></div>
       </div>
+    </div>
 
-      <div class="insight-grid" id="product-insights">
-        <div class="insight-card"><div class="insight-card-header"><div class="insight-icon">⏳</div><h4>Memuat...</h4></div><p>Menunggu data...</p></div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Somethinc — Most Praised</div>
+        <div class="chart-box" style="min-height:200px"><canvas id="c-som-praised"></canvas></div>
       </div>
-    </section>
-
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- TAB 3: COMPETITIVE -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <section class="tab-content" id="tab-competitive">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">🏆 Competitive Benchmark</h2>
-          <p class="section-subtitle">2. Keunggulan Kompetitor · Sentiment Gap Analysis</p>
-        </div>
+      <div class="card">
+        <div class="card-title">Skintific — Most Praised</div>
+        <div class="chart-box" style="min-height:200px"><canvas id="c-skn-praised"></canvas></div>
       </div>
+    </div>
+  </div>
 
-      <div class="alert alert-info">📊 Perbandingan sentimen per aspek antara Somethinc dan Skintific. Hijau = Somethinc unggul, Ungu = Skintific unggul.</div>
-
-      <div class="chart-grid">
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-cyan);"></span> Perbandingan Aspek — Radar</div>
-          <canvas id="chart-aspect-radar" height="300"></canvas>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-cyan);"></span> Sentimen Gap (Somethinc − Skintific)</div>
-          <canvas id="chart-sentiment-gap" height="300"></canvas>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-cyan);"></span> Most Praised — Somethinc</div>
-          <canvas id="chart-som-praised" height="250"></canvas>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-purple);"></span> Most Praised — Skintific</div>
-          <canvas id="chart-skn-praised" height="250"></canvas>
-        </div>
+  <!-- ═══ PRODUCT ═══ -->
+  <div class="sec" id="product">
+    <div class="sec-header">
+      <div class="sec-accent" style="background:var(--som)"></div>
+      <div>
+        <h2>Product Analysis</h2>
+        <p>Negatif % per produk &amp; feature evaluation</p>
       </div>
+    </div>
 
-      <div class="insight-grid" id="competitive-insights">
-        <div class="insight-card"><div class="insight-card-header"><div class="insight-icon">⏳</div><h4>Memuat...</h4></div><p>Menunggu data...</p></div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Somethinc — Negative % per Produk</div>
+        <div class="chart-box" style="min-height:220px"><canvas id="c-som-prod"></canvas></div>
       </div>
-    </section>
-
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- TAB 4: OPERATIONS -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <section class="tab-content" id="tab-operations">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">📦 Operational Issues</h2>
-          <p class="section-subtitle">4. Kendala Operasional · Logistic Sentiment</p>
-        </div>
+      <div class="card">
+        <div class="card-title">Skintific — Negative % per Produk</div>
+        <div class="chart-box" style="min-height:220px"><canvas id="c-skn-prod"></canvas></div>
       </div>
+    </div>
 
-      <div class="alert alert-warning">⚠️ Banyak review rendah karena operasional (pengiriman, packing, CS) — bukan karena kualitas produk. Ini "false negatives" yang bisa diperbaiki.</div>
-
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-label">Somethinc — Ops Mentions</div>
-          <div class="kpi-value" id="kpi-som-ops-pct" style="color:var(--accent-cyan);">—</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Somethinc — Rating dgn Ops</div>
-          <div class="kpi-value" id="kpi-som-ops-rating" style="color:var(--accent-cyan);">—</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Somethinc — Rating tanpa Ops</div>
-          <div class="kpi-value" id="kpi-som-noops-rating" style="color:var(--accent-green);">—</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Somethinc — False Negatives</div>
-          <div class="kpi-value" id="kpi-som-false-neg" style="color:var(--accent-orange);">—</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Skintific — Ops Mentions</div>
-          <div class="kpi-value" id="kpi-skn-ops-pct" style="color:var(--accent-purple);">—</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Skintific — Rating dgn Ops</div>
-          <div class="kpi-value" id="kpi-skn-ops-rating" style="color:var(--accent-purple);">—</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Skintific — Rating tanpa Ops</div>
-          <div class="kpi-value" id="kpi-skn-noops-rating" style="color:var(--accent-green);">—</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Skintific — False Negatives</div>
-          <div class="kpi-value" id="kpi-skn-false-neg" style="color:var(--accent-orange);">—</div>
-        </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Somethinc — Feature Complaints</div>
+        <div class="chart-box"><canvas id="c-som-feat"></canvas></div>
       </div>
-
-      <div class="chart-grid">
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-cyan);"></span> Somethinc — Issue Breakdown</div>
-          <canvas id="chart-ops-som" height="280"></canvas>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-purple);"></span> Skintific — Issue Breakdown</div>
-          <canvas id="chart-ops-skn" height="280"></canvas>
-        </div>
+      <div class="card">
+        <div class="card-title">Skintific — Feature Complaints</div>
+        <div class="chart-box"><canvas id="c-skn-feat"></canvas></div>
       </div>
+    </div>
+  </div>
 
-      <div class="insight-grid" id="ops-insights">
-        <div class="insight-card"><div class="insight-card-header"><div class="insight-icon">⏳</div><h4>Memuat...</h4></div><p>Menunggu data...</p></div>
+  <!-- ═══ OPERATIONS ═══ -->
+  <div class="sec" id="operations">
+    <div class="sec-header">
+      <div class="sec-accent" style="background:var(--neu)"></div>
+      <div>
+        <h2>Operational Issues</h2>
+        <p>Pengiriman, kemasan, CS response, barang salah</p>
       </div>
-    </section>
+    </div>
+    <div class="grid-2" id="ops-grid"></div>
+  </div>
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- TAB 5: PRICE & AFFILIATE -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <section class="tab-content" id="tab-pricing">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">💰 Price Sensitivity & Affiliate</h2>
-          <p class="section-subtitle">5. Sensitivitas Harga · 7. Pengaruh Afiliator</p>
-        </div>
+  <!-- ═══ PRICE & AFFILIATE ═══ -->
+  <div class="sec" id="pricing">
+    <div class="sec-header">
+      <div class="sec-accent" style="background:var(--skn)"></div>
+      <div>
+        <h2>Price Sensitivity &amp; Affiliate</h2>
+        <p>Dampak harga dan afiliasi terhadap sentimen</p>
       </div>
+    </div>
+    <div class="grid-2" id="price-grid"></div>
+    <div class="grid-2" id="affiliate-grid" style="margin-top:16px"></div>
+  </div>
 
-      <div class="alert alert-warning">💡 Apakah rating bagus karena kualitas atau efek diskon/afiliator? Cek analisis di bawah.</div>
-
-      <div class="chart-grid">
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-blue);"></span> Price Sensitivity — Rating Comparison</div>
-          <canvas id="chart-price-sensitivity" height="260"></canvas>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-green);"></span> Discount Effect on Rating</div>
-          <canvas id="chart-discount-effect" height="260"></canvas>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-pink);"></span> Affiliate vs Organic Rating</div>
-          <canvas id="chart-affiliate-comparison" height="260"></canvas>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-red);"></span> Rating Inflation (Affiliate − Organic)</div>
-          <canvas id="chart-rating-inflation" height="260"></canvas>
-        </div>
+  <!-- ═══ ANOMALY ═══ -->
+  <div class="sec" id="anomaly">
+    <div class="sec-header">
+      <div class="sec-accent" style="background:var(--neg)"></div>
+      <div>
+        <h2>Anomaly Detection</h2>
+        <p>Review mencurigakan — rating tinggi tapi teks negatif</p>
       </div>
+    </div>
+    <div class="grid-3" id="anomaly-grid"></div>
+  </div>
 
-      <div class="insight-grid" id="price-insights">
-        <div class="insight-card"><div class="insight-card-header"><div class="insight-icon">⏳</div><h4>Memuat...</h4></div><p>Menunggu data...</p></div>
+  <!-- ═══ TEMPORAL ═══ -->
+  <div class="sec" id="temporal">
+    <div class="sec-header">
+      <div class="sec-accent" style="background:var(--som)"></div>
+      <div>
+        <h2>Temporal Trends</h2>
+        <p>Pola mingguan &amp; timeline berdasarkan usia review</p>
       </div>
-    </section>
-
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- TAB 6: ANOMALY & TRENDS -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <section class="tab-content" id="tab-anomaly">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">🔍 Anomaly Detection & Trends</h2>
-          <p class="section-subtitle">9. Anomali Data · 10. Tren Waktu</p>
-        </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Weekly Negative % Pattern</div>
+        <div class="chart-box"><canvas id="c-weekly"></canvas></div>
       </div>
-
-      <div class="alert alert-danger">🚨 Bintang 5 tapi teksnya mengeluh? Ini indikasi fake review atau ulasan afiliator tidak jujur.</div>
-
-      <div class="chart-grid">
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-red);"></span> Suspicious Reviews by Brand</div>
-          <div style="max-height:240px;display:flex;justify-content:center;"><canvas id="chart-anomaly-brand" height="240" style="max-width:260px;"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-orange);"></span> Suspicious % of Total Reviews</div>
-          <canvas id="chart-anomaly-pct" height="240"></canvas>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-green);"></span> Weekly Sentiment Pattern</div>
-          <canvas id="chart-weekly-pattern" height="240"></canvas>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-purple);"></span> Peak Complaint Deviation</div>
-          <canvas id="chart-peak-complaints" height="240"></canvas>
-        </div>
+      <div class="card">
+        <div class="card-title">Brand Timeline</div>
+        <div class="chart-box"><canvas id="c-timeline"></canvas></div>
       </div>
+    </div>
+  </div>
 
-      <div class="chart-grid">
-        <div class="chart-card" style="grid-column:1/-1;">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-cyan);"></span> Sentiment Timeline — Brand Comparison</div>
-          <canvas id="chart-timeline" height="260" style="max-height:260px;"></canvas>
-        </div>
+  <!-- ═══ REPEAT PURCHASE ═══ -->
+  <div class="sec" id="repeat">
+    <div class="sec-header">
+      <div class="sec-accent" style="background:var(--pos)"></div>
+      <div>
+        <h2>Repeat Purchase Intent</h2>
+        <p>Indikasi pembelian ulang dari ulasan</p>
       </div>
+    </div>
+    <div class="grid-4" id="repeat-grid"></div>
+  </div>
 
-      <div class="insight-grid" id="anomaly-insights">
-        <div class="insight-card"><div class="insight-card-header"><div class="insight-icon">⏳</div><h4>Memuat...</h4></div><p>Menunggu data...</p></div>
-      </div>
-    </section>
+</div>
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- TAB 7: CUSTOMER INSIGHTS -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <section class="tab-content" id="tab-customer">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">❤️ Customer Loyalty & R&D</h2>
-          <p class="section-subtitle">6. Permintaan Pasar · 8. Loyalitas Konsumen</p>
-        </div>
-      </div>
+<div class="footer">
+  Somethinc vs Skintific · TikTok Shop Sentiment Analysis · 2.000 reviews · Scraping Tokopedia + NLP Pipeline · 2026
+</div>
 
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-label">Somethinc Repeat Rate</div>
-          <div class="kpi-value" id="kpi-som-repeat" style="color:var(--accent-cyan);">—</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Skintific Repeat Rate</div>
-          <div class="kpi-value" id="kpi-skn-repeat" style="color:var(--accent-purple);">—</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Somethinc Feature Requests</div>
-          <div class="kpi-value" id="kpi-som-requests" style="color:var(--accent-cyan);">—</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Skintific Feature Requests</div>
-          <div class="kpi-value" id="kpi-skn-requests" style="color:var(--accent-purple);">—</div>
-        </div>
-      </div>
+<script>
+const C = {
+  som: '#DC4A6B', somAlpha: 'rgba(220,74,107,0.15)',
+  skn: '#7A5CF0', sknAlpha: 'rgba(122,92,240,0.15)',
+  pos: '#2E9B5E', neg: '#D94848', neu: '#D4A026',
+  text: '#7A767C', grid: 'rgba(0,0,0,0.05)'
+};
+const F = {family:"'Inter',sans-serif",size:11,color:C.text};
+const BASE = {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},layout:{padding:{right:8,top:6}}};
+const CH = {};
+function mkChart(id,type,data,opts){
+  if(CH[id]){CH[id].data=data;CH[id].options={...CH[id].options,...opts};CH[id].update();return}
+  CH[id]=new Chart(document.getElementById(id),{type,data,options:{...BASE,...opts}});
+}
 
-      <div class="chart-grid">
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-green);"></span> Most Repeated Products</div>
-          <canvas id="chart-repeat-product" height="300"></canvas>
-        </div>
-        <div class="chart-card">
-          <div class="chart-card-title"><span class="dot" style="background:var(--accent-yellow);"></span> Most Requested Products (R&D)</div>
-          <canvas id="chart-feature-requests" height="300"></canvas>
-        </div>
-      </div>
+let D = null;
 
-      <div class="insight-grid" id="customer-insights">
-        <div class="insight-card"><div class="insight-card-header"><div class="insight-icon">⏳</div><h4>Memuat...</h4></div><p>Menunggu data...</p></div>
-      </div>
-    </section>
+async function load(){
+  try{
+    const r=await fetch('data/analysis_output.json');
+    D=await r.json();
+    render();
+  }catch(e){
+    document.querySelector('.main').innerHTML=`<div style="text-align:center;padding:60px"><h2>Gagal muat data</h2><p style="color:${C.text}">${e.message}</p></div>`;
+  }
+}
 
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <!-- TAB 8: INSIGHTS & RECOMMENDATIONS -->
-    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <section class="tab-content" id="tab-recommendations">
-      <div class="section-header">
-        <div>
-          <h2 class="section-title">🎯 Insights & Recommendations</h2>
-          <p class="section-subtitle">Analisis menyeluruh + rekomendasi strategis untuk Somethinc</p>
-        </div>
-      </div>
+function render(){
+  const meta=D._meta;
+  const cb=D['02_competitive_benchmark'];
+  const pi=D['01_product_improvement'];
+  const fe=D['03_feature_evaluation'];
+  const oi=D['04_operational_issues'];
+  const ps=D['05_price_sensitivity'];
+  const af=D['07_affiliate_influence'];
+  const ad=D['09_anomaly_detection'];
+  const tt=D['10_temporal_trends'];
+  const rp=D['08_repeat_purchase'];
 
-      <div class="alert alert-info">📊 Tab ini merangkum seluruh insight dari 10 sudut pandang analisis dan memberikan rekomendasi actionable.</div>
+  if(!meta||!cb)return;
+  const som=cb.somethinc||{},skn=cb.skintific||{};
+  const sent=meta.sentiment_distribution||{};
+  const total=meta.total_reviews||0;
+  const posPct=((sent.positive||0)/total*100).toFixed(1);
+  const negPct=((sent.negative||0)/total*100).toFixed(1);
+  const neuPct=((sent.neutral||0)/total*100).toFixed(1);
 
-      <!-- Executive KPIs -->
-      <div class="kpi-grid" id="rec-kpis">
-        <div class="kpi-card"><div class="kpi-label">Somethinc Rating</div><div class="kpi-value" id="rec-som-rating" style="color:var(--accent-cyan);">—</div></div>
-        <div class="kpi-card"><div class="kpi-label">Skintific Rating</div><div class="kpi-value" id="rec-skn-rating" style="color:var(--accent-purple);">—</div></div>
-        <div class="kpi-card"><div class="kpi-label">Rating Gap</div><div class="kpi-value" id="rec-rating-gap" style="color:var(--accent-green);">—</div></div>
-        <div class="kpi-card"><div class="kpi-label">Somethinc Repeat</div><div class="kpi-value" id="rec-som-repeat" style="color:var(--accent-cyan);">—</div></div>
-        <div class="kpi-card"><div class="kpi-label">Skintific Repeat</div><div class="kpi-value" id="rec-skn-repeat" style="color:var(--accent-purple);">—</div></div>
-      </div>
+  // ── VERDICT ──
+  const el=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
+  el('v-som-rating',som.avg_rating?.toFixed(2)||'-');
+  el('v-som-pos',som.positive_pct?`${som.positive_pct}%`:'-');
+  el('v-som-badge',som.positive_pct>=80?'Strong':'Moderate');
+  el('v-skn-rating',skn.avg_rating?.toFixed(2)||'-');
+  el('v-skn-pos',skn.positive_pct?`${skn.positive_pct}%`:'-');
+  el('v-skn-badge',skn.positive_pct>=80?'Strong':'Moderate');
+  document.getElementById('v-som-bar').style.width=`${(som.positive_pct||50)}%`;
+  document.getElementById('v-skn-bar').style.width=`${(skn.positive_pct||50)}%`;
 
-      <!-- KEY INSIGHTS -->
-      <div class="insight-grid" id="rec-insights"></div>
+  // Winner
+  const gap=skn.avg_rating-som.avg_rating;
+  const verdictDiv=document.getElementById('verdict-area');
+  const winnerHTML=document.createElement('div');
+  winnerHTML.style.cssText='flex:1;min-width:200px;display:flex;flex-direction:column;justify-content:center';
+  winnerHTML.innerHTML=`
+    <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--mute);margin-bottom:6px">The Verdict</div>
+    <div style="font-size:24px;font-weight:800;letter-spacing:-0.5px"><span style="color:${gap>0?'var(--skn)':'var(--som)'}">${gap>0?'Skintific':'Somethinc'}</span> unggul rating</div>
+    <div style="font-size:13px;color:var(--mute);margin-top:4px">Gap rating: <strong>${Math.abs(gap).toFixed(2)}</strong> poin. ${gap>0?'Skintific lebih disukai secara rating, tapi Somethinc unggul di positive % dan sentimen.':''}</div>
+  `;
+  verdictDiv.appendChild(winnerHTML);
 
-      <!-- ════════════════════════════════════════ -->
-      <!-- RECOMMENDATIONS SECTION -->
-      <!-- ════════════════════════════════════════ -->
-      <div class="rec-section">
-        <h3 class="rec-section-title">🚀 Rekomendasi Strategis — Somethinc</h3>
-        <p class="rec-section-desc">Berdasarkan analisis 2.000 review TikTok Shop, berikut rekomendasi prioritas untuk meningkatkan penjualan & kepuasan pelanggan.</p>
+  // ── KPI ──
+  el('kpi-total',total);
+  el('kpi-pos',`${sent.positive||0} (${posPct}%)`);
+  el('kpi-neu',`${sent.neutral||0} (${neuPct}%)`);
+  el('kpi-neg',`${sent.negative||0} (${negPct}%)`);
 
-        <!-- Recommendation 1 -->
-        <div class="rec-card rec-priority-1">
-          <div class="rec-header">
-            <span class="rec-priority-badge">#1 PRIORITAS</span>
-            <span class="rec-tag rec-tag-price">💰</span>
+  // ── CHARTS ──
+  // Overview Sentiment
+  mkChart('c-overview-sent','doughnut',{
+    labels:['Positif','Netral','Negatif'],
+    datasets:[{data:[sent.positive||0,sent.neutral||0,sent.negative||0],backgroundColor:[C.pos,C.neu,C.neg],borderWidth:0,hoverOffset:8}]
+  },{cutout:'68%',plugins:{legend:{display:true,position:'bottom',labels:{color:C.text,font:{size:11,family:"'Inter',sans-serif"},boxWidth:10,padding:14}}}});
+
+  // Rating Distribution (grouped bar)
+  const somRD=som.rating_distribution||{},sknRD=skn.rating_distribution||{};
+  const allR=['1','2','3','4','5'];
+  mkChart('c-overview-rating','bar',{
+    labels:allR.map(r=>`${r}B1`),
+    datasets:[
+      {label:'Somethinc',data:allR.map(r=>somRD[r]||0),backgroundColor:C.som,borderRadius:4},
+      {label:'Skintific',data:allR.map(r=>sknRD[r]||0),backgroundColor:C.skn,borderRadius:4}
+    ]
+  },{plugins:{legend:{display:true,position:'top',labels:{color:C.text,font:{size:10,family:"'Inter',sans-serif"},boxWidth:8,usePointStyle:true}}},
+    scales:{x:{ticks:F,grid:{display:false}},y:{beginAtZero:true,ticks:F,grid:{color:C.grid}}}});
+
+  // Brand Comparison
+  mkChart('c-overview-brand','bar',{
+    labels:['Rating','Positif %','Negatif %'],
+    datasets:[
+      {label:'Somethinc',data:[som.avg_rating,som.positive_pct,som.negative_pct],backgroundColor:C.somAlpha,borderColor:C.som,borderWidth:2,borderRadius:4},
+      {label:'Skintific',data:[skn.avg_rating,skn.positive_pct,skn.negative_pct],backgroundColor:C.sknAlpha,borderColor:C.skn,borderWidth:2,borderRadius:4}
+    ]
+  },{plugins:{legend:{display:true,position:'top',labels:{color:C.text,font:{size:10,family:"'Inter',sans-serif"},boxWidth:8,usePointStyle:true}}},
+    scales:{x:{ticks:F,grid:{display:false}},y:{beginAtZero:true,ticks:F,grid:{color:C.grid}}}});
+
+  document.getElementById('insight-brand').innerHTML=`<div class="insight-icon">i</div><span>Somethinc unggul di positive % (<strong>${som.positive_pct}%</strong> vs <strong>${skn.positive_pct}%</strong>) meski rating lebih rendah. Skintific rating lebih tinggi tapi positive % hampir sama — kemungkinan terpengaruh afiliasi.</span>`;
+
+  // ── COMPETITIVE ──
+  const gapData=cb.sentiment_gap||{};
+  const aw=gapData.aspect_wins||{};
+  const aspLabels=Object.keys(aw);
+
+  if(aspLabels.length){
+    const somA=aspLabels.map(a=>aw[a].somethinc_avg||0);
+    const sknA=aspLabels.map(a=>aw[a].skintific_avg||0);
+    mkChart('c-comp-radar','radar',{
+      labels:aspLabels.map(a=>a.charAt(0).toUpperCase()+a.slice(1)),
+      datasets:[
+        {label:'Somethinc',data:somA,borderColor:C.som,backgroundColor:C.somAlpha,pointBackgroundColor:C.som,borderWidth:2},
+        {label:'Skintific',data:sknA,borderColor:C.skn,backgroundColor:C.sknAlpha,pointBackgroundColor:C.skn,borderWidth:2}
+      ]
+    },{plugins:{legend:{display:true,position:'bottom',labels:{color:C.text,font:{size:10,family:"'Inter',sans-serif"},boxWidth:8,usePointStyle:true}}},
+      scales:{r:{beginAtZero:true,grid:{color:C.grid},angleLines:{color:C.grid},pointLabels:{color:C.text,font:{size:10}},ticks:{color:C.text,backdropColor:'transparent'}}}});
+
+    // Sentiment Gap bar
+    const gapVals=aspLabels.map(a=>aw[a].gap||0);
+    mkChart('c-comp-gap','bar',{
+      labels:aspLabels.map(a=>a.charAt(0).toUpperCase()+a.slice(1)),
+      datasets:[{
+        label:'Somethinc — Skintific',
+        data:gapVals,
+        backgroundColor:gapVals.map(v=>v>0?C.som:C.skn),
+        borderRadius:4
+      }]
+    },{plugins:{legend:{display:false}},
+      scales:{x:{ticks:F,grid:{display:false}},y:{beginAtZero:true,ticks:F,grid:{color:C.grid}}}});
+  }
+
+  // Most Praised
+  const somPraised=Object.entries(som.most_praised_words||{}).slice(0,10);
+  const sknPraised=Object.entries(skn.most_praised_words||{}).slice(0,10);
+  if(somPraised.length){
+    mkChart('c-som-praised','bar',{
+      labels:somPraised.map(([k])=>k),
+      datasets:[{label:'Somethinc',data:somPraised.map(([_,v])=>v),backgroundColor:C.som,borderRadius:4}]
+    },{indexAxis:'y',plugins:{legend:{display:false}},
+      scales:{x:{beginAtZero:true,ticks:F,grid:{color:C.grid}},y:{ticks:{...F,font:{size:10}},grid:{display:false}}}});
+  }
+  if(sknPraised.length){
+    mkChart('c-skn-praised','bar',{
+      labels:sknPraised.map(([k])=>k),
+      datasets:[{label:'Skintific',data:sknPraised.map(([_,v])=>v),backgroundColor:C.skn,borderRadius:4}]
+    },{indexAxis:'y',plugins:{legend:{display:false}},
+      scales:{x:{beginAtZero:true,ticks:F,grid:{color:C.grid}},y:{ticks:{...F,font:{size:10}},grid:{display:false}}}});
+  }
+
+  // ── PRODUCT ANALYSIS ──
+  if(pi){
+    const somProds=Object.entries(pi).filter(([k])=>!k.startsWith('skn'));
+    const sknProds=Object.entries(pi).filter(([k])=>k.startsWith('skn'));
+    const somLabels=somProds.map(([k])=>k.replace(/^som-/,''));
+    const somNeg=somProds.map(([_,v])=>v.negative_pct||0);
+    const sknLabels=sknProds.map(([k])=>k.replace(/^skn-/,''));
+    const sknNeg=sknProds.map(([_,v])=>v.negative_pct||0);
+
+    mkChart('c-som-prod','bar',{
+      labels:somLabels,
+      datasets:[{label:'Negatif %',data:somNeg,backgroundColor:somNeg.map(v=>v>15?C.neg:v>10?C.neu:C.pos),borderRadius:4}]
+    },{indexAxis:'y',plugins:{legend:{display:false}},
+      scales:{x:{beginAtZero:true,max:Math.max(...somNeg,20)+10,ticks:{...F,callback:v=>v+'%'},grid:{color:C.grid}},y:{ticks:{...F,font:{size:9}},grid:{display:false}}}});
+
+    mkChart('c-skn-prod','bar',{
+      labels:sknLabels,
+      datasets:[{label:'Negatif %',data:sknNeg,backgroundColor:sknNeg.map(v=>v>15?C.neg:v>10?C.neu:C.pos),borderRadius:4}]
+    },{indexAxis:'y',plugins:{legend:{display:false}},
+      scales:{x:{beginAtZero:true,max:Math.max(...sknNeg,20)+10,ticks:{...F,callback:v=>v+'%'},grid:{color:C.grid}},y:{ticks:{...F,font:{size:9}},grid:{display:false}}}});
+
+    // Feature evaluation (dual axis)
+    buildFeatChart(fe?.somethinc||{},'c-som-feat',C.som);
+    buildFeatChart(fe?.skintific||{},'c-skn-feat',C.skn);
+  }
+
+  // ── OPERATIONS ──
+  const opsGrid=document.getElementById('ops-grid');
+  if(oi){
+    opsGrid.innerHTML='';
+    for(const brand of ['somethinc','skintific']){
+      const bd=oi[brand]||{};
+      const ops=bd.operational_breakdown||{};
+      const brandColor=brand==='somethinc'?C.som:C.skn;
+      const opsHTML=Object.entries(ops).filter(([_,v])=>v.total_mentions>0).map(([k,v])=>`
+        <div class="card" style="border-left:3px solid ${brandColor}">
+          <div class="card-title">${k.replace(/_/g,' ')}</div>
+          <div style="display:flex;gap:12px;align-items:baseline">
+            <span style="font-size:28px;font-weight:800">${v.total_mentions}</span>
+            <span style="font-size:12px;color:${C.text}">mentions · avg rating ${v.avg_rating?.toFixed(1)||'-'}</span>
           </div>
-          <h4 class="rec-title">Turunkan Hambatan Harga — <span style="color:var(--accent-cyan);">Luncurkan Varian Ekonomis</span></h4>
-          <div class="rec-body">
-            <div class="rec-row">
-              <span class="rec-label">📊 Masalah</span>
-              <span class="rec-value" id="rec1-problem">Memuat...</span>
+          <div style="font-size:12px;color:${C.text};margin-top:4px">Sentiment impact: ${v.sentiment_impact||0}</div>
+        </div>
+      `).join('');
+      if(opsHTML){
+        opsGrid.innerHTML+=`
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+              <span class="badge ${brand==='somethinc'?'som':'skn'} xs">${brand.charAt(0).toUpperCase()+brand.slice(1)}</span>
+              <span style="font-size:12px;color:${C.text}">${bd.total_operational_mentions||0} total operational mentions</span>
             </div>
-            <div class="rec-row">
-              <span class="rec-label">💡 Solusi</span>
-              <span class="rec-value">Buat <strong>varian ekonomis</strong> (ukuran kecil/travel pack/trial kit) dengan harga 40-50% lebih rendah dari produk reguler. Gunakan kemasan sederhana untuk menekan biaya produksi. Promosikan sebagai \"entry point\" untuk pelanggan baru yang ragu dengan harga premium.</span>
+            <div style="display:flex;flex-direction:column;gap:8px">${opsHTML||'<div class="card" style="color:var(--mute)">No operational issues found</div>'}</div>
+          </div>`;
+      }
+    }
+  }
+
+  // ── PRICE & AFFILIATE ──
+  const priceGrid=document.getElementById('price-grid');
+  if(ps){
+    priceGrid.innerHTML='';
+    for(const brand of ['somethinc','skintific']){
+      const pd=ps[brand]||{};
+      const bc=brand==='somethinc'?C.som:C.skn;
+      const bcLight=brand==='somethinc'?C.somAlpha:C.sknAlpha;
+      priceGrid.innerHTML+=`
+        <div class="card" style="border-left:3px solid ${bc}">
+          <div class="card-title"><span class="badge ${brand==='somethinc'?'som':'skn'} xs">${brand}</span> Price Sensitivity</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+            <div style="background:${bcLight};border-radius:10px;padding:12px;text-align:center">
+              <div style="font-size:10px;color:${C.text};font-weight:500">Price Mention</div>
+              <div style="font-size:22px;font-weight:800;color:${bc}">${pd.price_mention_reviews||0}</div>
+              <div style="font-size:11px;color:${C.text}">reviews</div>
             </div>
-            <div class="rec-kpi-box">
-              <div class="rec-kpi-label">🎯 KPI — Target 3 Bulan</div>
-              <div class="rec-kpi-grid">
-                <div class="rec-kpi-item">
-                  <span class="rec-kpi-metric" id="rec1-kpi1">—</span>
-                  <span class="rec-kpi-desc">Penurunan review komplain harga</span>
-                </div>
-                <div class="rec-kpi-item">
-                  <span class="rec-kpi-metric" id="rec1-kpi2">—</span>
-                  <span class="rec-kpi-desc">Kenaikan rating pembeli baru</span>
-                </div>
-                <div class="rec-kpi-item">
-                  <span class="rec-kpi-metric" id="rec1-kpi3">—</span>
-                  <span class="rec-kpi-desc">Penetrasi first-time buyer via varian ekonomis</span>
-                </div>
-              </div>
+            <div style="background:${bcLight};border-radius:10px;padding:12px;text-align:center">
+              <div style="font-size:10px;color:${C.text};font-weight:500">Discount Mention</div>
+              <div style="font-size:22px;font-weight:800;color:${bc}">${pd.discount_mention_reviews||0}</div>
+              <div style="font-size:11px;color:${C.text}">reviews</div>
             </div>
           </div>
-        </div>
+          <div style="font-size:12px;color:${C.text};margin-top:8px">
+            Avg rating (price mentioners): <strong>${pd.avg_rating_price_mentioners?.toFixed(2)||'-'}</strong>
+            &middot; Discount positive: <strong>${pd.discount_positive_pct||0}%</strong>
+          </div>
+        </div>`;
+    }
+  }
 
-        <!-- Recommendation 2 -->
-        <div class="rec-card rec-priority-2">
-          <div class="rec-header">
-            <span class="rec-priority-badge" style="background:rgba(59,130,246,0.2);color:var(--accent-blue);">#2 HIGH IMPACT</span>
-            <span class="rec-tag rec-tag-ops">📦</span>
-          </div>
-          <h4 class="rec-title">Perbaiki Operasional Pengiriman — <span style="color:var(--accent-cyan);">Zero Defect Packaging</span></h4>
-          <div class="rec-body">
-            <div class="rec-row">
-              <span class="rec-label">📊 Masalah</span>
-              <span class="rec-value" id="rec2-problem">Memuat...</span>
-            </div>
-            <div class="rec-row">
-              <span class="rec-label">💡 Solusi</span>
-              <span class="rec-value"><strong>Standarisasi kemasan pengiriman</strong>: bubble wrap ganda + kotak kardus khusus. Audit kurir/ekspedisi — ganti mitra logistik dengan rekor pengiriman buruk. Berikan <strong>garansi kerusakan pengiriman</strong> untuk meningkatkan kepercayaan. Tambahkan <strong>QC checklist</strong> sebelum setiap pengiriman.</span>
-            </div>
-            <div class="rec-kpi-box">
-              <div class="rec-kpi-label">🎯 KPI — Target 3 Bulan</div>
-              <div class="rec-kpi-grid">
-                <div class="rec-kpi-item">
-                  <span class="rec-kpi-metric" id="rec2-kpi1">—</span>
-                  <span class="rec-kpi-desc">Penurunan review komplain operasional</span>
-                </div>
-                <div class="rec-kpi-item">
-                  <span class="rec-kpi-metric" id="rec2-kpi2">—</span>
-                  <span class="rec-kpi-desc">Rating rata-rata setelah perbaikan operasional</span>
-                </div>
-                <div class="rec-kpi-item">
-                  <span class="rec-kpi-metric" id="rec2-kpi3">—</span>
-                  <span class="rec-kpi-desc">Eliminasi false negative akibat operasional</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Recommendation 3 -->
-        <div class="rec-card rec-priority-3">
-          <div class="rec-header">
-            <span class="rec-priority-badge" style="background:rgba(139,92,246,0.15);color:var(--accent-purple);">#3 STRATEGIC</span>
-            <span class="rec-tag rec-tag-rd">🔬</span>
-          </div>
-          <h4 class="rec-title">Perkuat R&D untuk Kulit Berminyak — <span style="color:var(--accent-cyan);">Formula Ringan</span></h4>
-          <div class="rec-body">
-            <div class="rec-row">
-              <span class="rec-label">📊 Masalah</span>
-              <span class="rec-value" id="rec3-problem">Memuat...</span>
-            </div>
-            <div class="rec-row">
-              <span class="rec-label">💡 Solusi</span>
-              <span class="rec-value">Kembangkan <strong>varian oil-free/gel-based</strong> dari produk best-seller (Calm Down! Moisturizer & Acne Pore Serum). Tambahkan klaim \"non-comedogenic\" dan \"oil-free\" di kemasan. Targetkan segmen kulit berminyak & kombinasi yang saat ini kurang terlayani dengan baik.</span>
-            </div>
-            <div class="rec-kpi-box">
-              <div class="rec-kpi-label">🎯 KPI — Target 6 Bulan</div>
-              <div class="rec-kpi-grid">
-                <div class="rec-kpi-item">
-                  <span class="rec-kpi-metric" id="rec3-kpi1">—</span>
-                  <span class="rec-kpi-desc">Kenaikan rating pada segmen kulit berminyak</span>
-                </div>
-                <div class="rec-kpi-item">
-                  <span class="rec-kpi-metric" id="rec3-kpi2">—</span>
-                  <span class="rec-kpi-desc">Penurunan komplain tekstur/berat</span>
-                </div>
-                <div class="rec-kpi-item">
-                  <span class="rec-kpi-metric" id="rec3-kpi3">—</span>
-                  <span class="rec-kpi-desc">Market share gain dari Skintific di segmen young adult</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Summary Roadmap -->
-      <div class="rec-roadmap">
-        <h3 class="rec-section-title">📅 Roadmap Implementasi</h3>
-        <div class="rec-roadmap-grid">
-          <div class="rec-roadmap-item">
-            <div class="rec-roadmap-phase" style="background:rgba(239,68,68,0.15);color:var(--accent-red);">Bulan 1</div>
-            <div class="rec-roadmap-desc">Audit operasional + ganti mitra logistik + standarisasi kemasan kirim</div>
-          </div>
-          <div class="rec-roadmap-arrow">→</div>
-          <div class="rec-roadmap-item">
-            <div class="rec-roadmap-phase" style="background:rgba(249,115,22,0.15);color:var(--accent-orange);">Bulan 2</div>
-            <div class="rec-roadmap-desc">Riset pasar untuk varian ekonomis + trial kit + uji formula ringan</div>
-          </div>
-          <div class="rec-roadmap-arrow">→</div>
-          <div class="rec-roadmap-item">
-            <div class="rec-roadmap-phase" style="background:rgba(34,197,94,0.15);color:var(--accent-green);">Bulan 3-6</div>
-            <div class="rec-roadmap-desc">Launch varian ekonomis + oil-free line + evaluasi KPI</div>
-          </div>
+  const affGrid=document.getElementById('affiliate-grid');
+  if(af){
+    const as=af.summary||{};
+    affGrid.innerHTML=`
+      <div class="card">
+        <div class="card-title">Affiliate Overview</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap">
+          <div><span style="font-size:28px;font-weight:800">${as.affiliate_pct}%</span><div style="font-size:11px;color:${C.text}">Affiliate Reviews</div></div>
+          <div><span style="font-size:28px;font-weight:800">${as.total_reviews-as.affiliate_reviews}</span><div style="font-size:11px;color:${C.text}">Organic</div></div>
+          <div><span style="font-size:28px;font-weight:800;color:${C.neg}">${as.suspicious_reviews}</span><div style="font-size:11px;color:${C.text}">Suspicious</div></div>
         </div>
       </div>
-    </section>
+      <div class="card">
+        <div class="card-title">Rating Inflation</div>
+        <div style="display:flex;gap:16px">
+          <div><div style="font-size:11px;color:${C.text}">Somethinc</div><span style="font-size:24px;font-weight:800;color:${C.som}">${((af.somethinc?.rating_inflation||0)*100).toFixed(1)}%</span></div>
+          <div><div style="font-size:11px;color:${C.text}">Skintific</div><span style="font-size:24px;font-weight:800;color:${C.skn}">${((af.skintific?.rating_inflation||0)*100).toFixed(1)}%</span></div>
+        </div>
+        <div style="font-size:12px;color:${C.text};margin-top:8px" id="inflation-insight"></div>
+      </div>`;
+    document.getElementById('inflation-insight').textContent=
+      `Skintific punya rating inflation ${((af.skintific?.rating_inflation||0)*100).toFixed(1)}% dari afiliasi — affiliate lebih tinggi ratingnya dibanding organic.`;
+  }
 
-  </main>
+  // ── ANOMALY ──
+  const anGrid=document.getElementById('anomaly-grid');
+  if(ad){
+    const ao=ad.overall||{};
+    anGrid.innerHTML=`
+      <div class="card" style="border-left:3px solid ${C.neg};text-align:center">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:${C.text}">Total Suspicious</div>
+        <div style="font-size:42px;font-weight:800;color:${C.neg}">${ao.total_suspicious}</div>
+        <div style="font-size:13px;color:${C.text}">${ao.suspicious_pct}% of all reviews</div>
+      </div>
+      <div class="card" style="border-left:3px solid ${C.som}">
+        <div class="card-title">Somethinc</div>
+        <div style="font-size:28px;font-weight:800;color:${C.som}">${ad.somethinc?.total_suspicious||0}</div>
+        <div style="font-size:12px;color:${C.text};margin-top:6px">
+          ${Object.entries(ad.somethinc?.suspicious_by_product||{}).slice(0,4).map(([k,v])=>`<span style="display:inline-block;background:${C.somAlpha};padding:2px 8px;border-radius:99px;margin:2px;font-size:11px">${k}: ${v}</span>`).join('')}
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid ${C.skn}">
+        <div class="card-title">Skintific</div>
+        <div style="font-size:28px;font-weight:800;color:${C.skn}">${ad.skintific?.total_suspicious||0}</div>
+        <div style="font-size:12px;color:${C.text};margin-top:6px">
+          ${Object.entries(ad.skintific?.suspicious_by_product||{}).slice(0,4).map(([k,v])=>`<span style="display:inline-block;background:${C.sknAlpha};padding:2px 8px;border-radius:99px;margin:2px;font-size:11px">${k}: ${v}</span>`).join('')}
+        </div>
+      </div>`;
+  }
 
-  <!-- ═══ FOOTER ═══ -->
-  <footer class="dash-footer">
-    TikTok Shop Sentiment Analyzer · Somethinc vs Skintific · Built by Fityan Hanif · Data Analyst Portfolio Project
-  </footer>
+  // ── TEMPORAL ──
+  if(tt){
+    const wp=tt.weekly_pattern||{};
+    const days=Object.keys(wp);
+    const negPcts=days.map(d=>wp[d].negative_pct||0);
+    const totals=days.map(d=>wp[d].total||0);
+    mkChart('c-weekly','bar',{
+      labels:days,
+      datasets:[
+        {label:'Negative %',data:negPcts,backgroundColor:C.neg,borderRadius:4,yAxisID:'y'},
+        {label:'Total Reviews',data:totals,backgroundColor:C.somAlpha,borderColor:C.som,borderWidth:1,type:'line',tension:.3,pointRadius:3,pointBackgroundColor:C.som,yAxisID:'y1'}
+      ]
+    },{plugins:{legend:{display:true,position:'top',labels:{color:C.text,font:{size:10},boxWidth:8,usePointStyle:true}}},
+      scales:{
+        x:{ticks:F,grid:{display:false}},
+        y:{beginAtZero:true,ticks:{...F,callback:v=>v+'%'},grid:{color:C.grid}},
+        y1:{position:'right',beginAtZero:true,grid:{display:false},ticks:{color:C.text}}
+      }});
 
-  <script src="js/app.js"></script>
+    // Brand timeline
+    const bt=tt.brand_timeline||{};
+    const somTL=bt.somethinc||{};
+    const sknTL=bt.skintific||{};
+    const tlLabels=Object.keys(somTL);
+    if(tlLabels.length){
+      mkChart('c-timeline','bar',{
+        labels:tlLabels,
+        datasets:[
+          {label:'Somethinc Rating',data:tlLabels.map(l=>somTL[l]?.avg_rating||0),backgroundColor:C.som,borderRadius:3},
+          {label:'Skintific Rating',data:tlLabels.map(l=>sknTL[l]?.avg_rating||0),backgroundColor:C.skn,borderRadius:3}
+        ]
+      },{plugins:{legend:{display:true,position:'top',labels:{color:C.text,font:{size:10},boxWidth:8,usePointStyle:true}}},
+        scales:{x:{ticks:F,grid:{display:false}},y:{beginAtZero:true,min:3,max:5,ticks:F,grid:{color:C.grid}}}});
+    }
+  }
+
+  // ── REPEAT PURCHASE ──
+  const rpGrid=document.getElementById('repeat-grid');
+  if(rp){
+    rpGrid.innerHTML='';
+    for(const brand of ['somethinc','skintific']){
+      const bd=rp[brand]||{};
+      const bc=brand==='somethinc'?C.som:C.skn;
+      rpGrid.innerHTML+=`
+        <div class="card" style="border-left:3px solid ${bc};text-align:center">
+          <div class="card-title"><span class="badge ${brand==='somethinc'?'som':'skn'} xs">${brand}</span></div>
+          <div style="font-size:32px;font-weight:800;color:${bc}">${bd.repeat_purchase_pct||0}%</div>
+          <div style="font-size:11px;color:${C.text}">Repeat purchase intent</div>
+          <div style="font-size:12px;color:${C.text};margin-top:6px">${bd.repeat_purchase_count||0} of ${bd.total_reviews||0} reviews</div>
+        </div>`;
+    }
+  }
+}
+
+function buildFeatChart(data,canvasId,color){
+  const entries=Object.entries(data||{});
+  if(!entries.length) return;
+  const labels=entries.map(([k])=>k.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()));
+  const ratios=entries.map(([_,v])=>v.complaint_ratio||0);
+  const mentions=entries.map(([_,v])=>v.total_mentions||0);
+  mkChart(canvasId,'bar',{
+    labels,
+    datasets:[
+      {label:'Complaint %',data:ratios,backgroundColor:ratios.map(v=>v>50?C.neg:v>30?C.neu:C.pos),borderRadius:3,yAxisID:'y'},
+      {label:'Mentions',data:mentions,borderColor:color,backgroundColor:color,type:'line',tension:.3,pointRadius:3,pointBackgroundColor:color,yAxisID:'y1'}
+    ]
+  },{plugins:{legend:{display:true,position:'top',labels:{color:C.text,font:{size:9},boxWidth:6,usePointStyle:true}}},
+    scales:{
+      x:{ticks:{...F,font:{size:8}},grid:{display:false}},
+      y:{beginAtZero:true,max:100,ticks:{...F,callback:v=>v+'%'},grid:{color:C.grid}},
+      y1:{position:'right',beginAtZero:true,grid:{display:false},ticks:{color:C.text,font:{size:9}}}
+    }});
+}
+
+load();
+</script>
 </body>
 </html>
