@@ -85,6 +85,7 @@ function renderAll() {
   renderPriceAffiliate();
   renderAnomalyTrends();
   renderDataTable();
+  renderInsightsRecommendations();
 }
 
 // ════════════════════════════════════════════════════
@@ -1037,6 +1038,115 @@ function renderDataTable() {
         Skintific: ${rp.skintific?.repeat_avg_rating || 0} vs ${rp.skintific?.non_repeat_avg_rating || 0} (premium +${rp.skintific?.loyalty_rating_premium || 0}).</p>
       </div>`;
   }
+}
+
+// ════════════════════════════════════════════════════
+// TAB 8: INSIGHTS & RECOMMENDATIONS
+// ════════════════════════════════════════════════════
+function renderInsightsRecommendations() {
+  const cb = DATA['02_competitive_benchmark'];
+  const ps = DATA['05_price_sensitivity'];
+  const rp = DATA['08_repeat_purchase'];
+  const af = DATA['07_affiliate_influence'];
+  const oi = DATA['04_operational_issues'];
+  const an = DATA['09_anomaly_detection'];
+  const pi = DATA['01_product_improvement'];
+
+  if (!cb) return;
+
+  // ── Executive KPIs ──
+  const som = cb.somethinc || {};
+  const skn = cb.skintific || {};
+  const gap = (som.avg_rating || 0) - (skn.avg_rating || 0);
+
+  document.getElementById('rec-som-rating').textContent = (som.avg_rating || 0).toFixed(2);
+  document.getElementById('rec-skn-rating').textContent = (skn.avg_rating || 0).toFixed(2);
+  document.getElementById('rec-rating-gap').textContent = (gap >= 0 ? '+' : '') + gap.toFixed(2);
+  document.getElementById('rec-som-repeat').textContent = (rp.somethinc?.repeat_pct || 0) + '%';
+  document.getElementById('rec-skn-repeat').textContent = (rp.skintific?.repeat_pct || 0) + '%';
+
+  // ── Key Insights ──
+  const somPricePct = ps.somethinc ? ((ps.somethinc.price_mention_reviews / ps.somethinc.total_reviews) * 100).toFixed(1) : 0;
+  const sknDiscountPct = ps.skintific ? ((ps.skintific.discount_mention_reviews / ps.skintific.total_reviews) * 100).toFixed(1) : 0;
+  const somRepeatPct = rp.somethinc?.repeat_pct || 0;
+  const sknRepeatPct = rp.skintific?.repeat_pct || 0;
+  const somOpsPct = oi.somethinc?.pct_of_all_reviews || 0;
+  const sknOpsPct = oi.skintific?.pct_of_all_reviews || 0;
+  const somInfl = af.somethinc?.rating_inflation || 0;
+  const sknInfl = af.skintific?.rating_inflation || 0;
+  const anomalyPct = an?.overall?.pct_suspicious || 0;
+
+  // Top insight
+  const advantage = gap > 0 ? 'Somethinc' : 'Skintific';
+  const advantageKey = gap > 0 ? 'unggul' : 'perlu waspada';
+
+  const insightContainer = document.getElementById('rec-insights');
+  if (insightContainer) {
+    insightContainer.innerHTML = `
+      <div class="insight-card" style="grid-column:1/-1;">
+        <div class="insight-card-header"><div class="insight-icon" style="background:rgba(34,211,238,0.15);">🏆</div><h4>Peringkat Brand</h4></div>
+        <p>Somethinc rating <strong>${(som.avg_rating || 0).toFixed(2)}</strong> vs Skintific <strong>${(skn.avg_rating || 0).toFixed(2)}</strong> (gap <strong>${gap >= 0 ? '+' : ''}${gap.toFixed(2)}</strong>).<br>
+        Sentimen Somethinc <strong>${(som.avg_sentiment_score || 0).toFixed(1)}</strong>, Skintific <strong>${(skn.avg_sentiment_score || 0).toFixed(1)}</strong>.<br>
+        ${advantage} ${advantageKey} secara keseluruhan dengan positif ${(som.positive_pct || 0).toFixed(1)}% vs ${(skn.positive_pct || 0).toFixed(1)}%.</p>
+      </div>
+      <div class="insight-card">
+        <div class="insight-card-header"><div class="insight-icon" style="background:rgba(239,68,68,0.15);">💰</div><h4>Masalah Harga</h4></div>
+        <p><strong>${somPricePct}%</strong> review Somethinc menyebut harga sebagai masalah. Rating turun jadi <strong>${(ps.somethinc?.avg_rating_price_mentioners || 0).toFixed(2)}</strong> saat harga disebut — dari ${(som.avg_rating || 0).toFixed(2)} normal. Ini hambatan terbesar untuk konversi pembeli baru.</p>
+      </div>
+      <div class="insight-card">
+        <div class="insight-card-header"><div class="insight-icon" style="background:rgba(234,179,8,0.15);">🏷️</div><h4>Diskon Dependency</h4></div>
+        <p>Skintific <strong>${sknDiscountPct}%</strong> review menyebut diskon — sangat bergantung promo. Somethinc hanya <strong>${somPricePct}%</strong>. Ini indikasi Skintific susah jual tanpa diskon.</p>
+      </div>
+      <div class="insight-card">
+        <div class="insight-card-header"><div class="insight-icon" style="background:rgba(34,197,94,0.15);">❤️</div><h4>Loyalitas</h4></div>
+        <p><strong>Somethinc ${somRepeatPct}%</strong> repeat purchase vs Skintific <strong>${sknRepeatPct}%</strong>. Repeat customer Somethinc rating <strong>${(rp.somethinc?.repeat_avg_rating || 0).toFixed(2)}</strong> — loyalitas premium yang kuat. Skintific susah bangun loyalitas jangka panjang.</p>
+      </div>
+      <div class="insight-card">
+        <div class="insight-card-header"><div class="insight-icon" style="background:rgba(249,115,22,0.15);">📦</div><h4>Operasional</h4></div>
+        <p>Skintific: <strong>${sknOpsPct}%</strong> review bermasalah operasional vs Somethinc <strong>${somOpsPct}%</strong>. Packing bocor, pengiriman lama, CS lambat — ini kelemahan yang bisa Somethinc exploit.</p>
+      </div>
+      <div class="insight-card">
+        <div class="insight-card-header"><div class="insight-icon" style="background:rgba(139,92,246,0.15);">📢</div><h4>Afiliasi & Anomali</h4></div>
+        <p>Skintific: <strong>${sknInfl.toFixed(2)}</strong> inflasi rating dari afiliator. ${anomalyPct}% total review terindikasi anomali. Somethinc: inflasi <strong>${somInfl.toFixed(2)}</strong> — afiliator lebih jujur.</p>
+      </div>`;
+  }
+
+  // ── Compute Recommendation KPIs ──
+
+  // Rec 1: Price barrier
+  const somPriceMentionPct = ps.somethinc ? (ps.somethinc.price_mention_reviews / ps.somethinc.total_reviews) * 100 : 15;
+  const rec1Kpi1 = `${Math.round(somPriceMentionPct * 0.4)}%`; // Target cut by 60% → 40% of current
+  const rec1Problem = `${somPriceMentionPct.toFixed(1)}% review Somethinc menyebut harga (${ps.somethinc?.price_mention_reviews || 0} dari ${ps.somethinc?.total_reviews || 0} review). Rating pembeli yang komplain harga: ${(ps.somethinc?.avg_rating_price_mentioners || 0).toFixed(2)} — lebih rendah ${((som.avg_rating || 0) - (ps.somethinc?.avg_rating_price_mentioners || 0)).toFixed(2)} poin dari rata-rata.`;
+  const rec1Kpi2 = `+${gap.toFixed(2)}`; // Close the gap
+  const rec1Kpi3 = `${Math.round(somRepeatPct * 0.25)}%`; // 25% of repeat rate as new penetration
+
+  // Rec 2: Operations
+  const somOpsPctActual = oi.somethinc?.pct_of_all_reviews || 0;
+  const rec2Kpi1 = `${Math.round(somOpsPctActual * 0.3)}%`; // Cut by 70%
+  const rec2Problem = `${somOpsPctActual.toFixed(1)}% review Somethinc menyebut masalah operasional. Rating turun ${(oi.somethinc?.rating_gap_due_to_ops || 0).toFixed(2)} poin saat operasional bermasalah. False negatives: ${oi.somethinc?.false_negatives_from_ops || 0} review rating rendah karena operasional bukan produk.`;
+  const rec2Kpi2 = `${(som.avg_rating || 0).toFixed(2)}`; // Maintain current
+  const rec2Kpi3 = `${oi.somethinc?.false_negatives_from_ops || 0}`; // Target to eliminate
+
+  // Rec 3: R&D texture
+  const rec3Problem = `Beberapa produk Somethinc (terutama Rich Texture Moisturizer) dikeluhkan berat untuk kulit berminyak. ${(som.complaints?.tekstur || 0)} keluhan tekstur terdeteksi. Skintific ${(skn.avg_rating || 0) > 0 ? 'lebih rendah di rating tapi diklaim lebih ringan' : ''}.`;
+  const rec3Kpi1 = `+0.3`; // Target rating increase for oily skin
+  const rec3Kpi2 = `-50%`; // Cut texture complaints in half
+  const rec3Kpi3 = `+5%`; // Market share
+
+  document.getElementById('rec1-problem').textContent = rec1Problem;
+  document.getElementById('rec1-kpi1').textContent = rec1Kpi1;
+  document.getElementById('rec1-kpi2').textContent = rec1Kpi2;
+  document.getElementById('rec1-kpi3').textContent = rec1Kpi3;
+
+  document.getElementById('rec2-problem').textContent = rec2Problem;
+  document.getElementById('rec2-kpi1').textContent = rec2Kpi1;
+  document.getElementById('rec2-kpi2').textContent = rec2Kpi2;
+  document.getElementById('rec2-kpi3').textContent = rec2Kpi3;
+
+  document.getElementById('rec3-problem').textContent = rec3Problem;
+  document.getElementById('rec3-kpi1').textContent = rec3Kpi1;
+  document.getElementById('rec3-kpi2').textContent = rec3Kpi2;
+  document.getElementById('rec3-kpi3').textContent = rec3Kpi3;
 }
 
 // ════════════════════════════════════════════════════

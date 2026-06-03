@@ -36,6 +36,7 @@
     <button class="tab-btn" data-tab="tab-pricing" onclick="void(0)">💰 Price & Affiliate</button>
     <button class="tab-btn" data-tab="tab-anomaly" onclick="void(0)">🔍 Anomaly & Trends</button>
     <button class="tab-btn" data-tab="tab-customer" onclick="void(0)">❤️ Customer Insights</button>
+    <button class="tab-btn" data-tab="tab-recommendations" onclick="void(0)">🎯 Rekomendasi</button>
   </nav>
 
   <!-- ═══ MAIN ═══ -->
@@ -354,6 +355,170 @@
 
       <div class="insight-grid" id="customer-insights">
         <div class="insight-card"><div class="insight-card-header"><div class="insight-icon">⏳</div><h4>Memuat...</h4></div><p>Menunggu data...</p></div>
+      </div>
+    </section>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- TAB 8: INSIGHTS & RECOMMENDATIONS -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <section class="tab-content" id="tab-recommendations">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">🎯 Insights & Recommendations</h2>
+          <p class="section-subtitle">Analisis menyeluruh + rekomendasi strategis untuk Somethinc</p>
+        </div>
+      </div>
+
+      <div class="alert alert-info">📊 Tab ini merangkum seluruh insight dari 10 sudut pandang analisis dan memberikan rekomendasi actionable.</div>
+
+      <!-- Executive KPIs -->
+      <div class="kpi-grid" id="rec-kpis">
+        <div class="kpi-card"><div class="kpi-label">Somethinc Rating</div><div class="kpi-value" id="rec-som-rating" style="color:var(--accent-cyan);">—</div></div>
+        <div class="kpi-card"><div class="kpi-label">Skintific Rating</div><div class="kpi-value" id="rec-skn-rating" style="color:var(--accent-purple);">—</div></div>
+        <div class="kpi-card"><div class="kpi-label">Rating Gap</div><div class="kpi-value" id="rec-rating-gap" style="color:var(--accent-green);">—</div></div>
+        <div class="kpi-card"><div class="kpi-label">Somethinc Repeat</div><div class="kpi-value" id="rec-som-repeat" style="color:var(--accent-cyan);">—</div></div>
+        <div class="kpi-card"><div class="kpi-label">Skintific Repeat</div><div class="kpi-value" id="rec-skn-repeat" style="color:var(--accent-purple);">—</div></div>
+      </div>
+
+      <!-- KEY INSIGHTS -->
+      <div class="insight-grid" id="rec-insights"></div>
+
+      <!-- ════════════════════════════════════════ -->
+      <!-- RECOMMENDATIONS SECTION -->
+      <!-- ════════════════════════════════════════ -->
+      <div class="rec-section">
+        <h3 class="rec-section-title">🚀 Rekomendasi Strategis — Somethinc</h3>
+        <p class="rec-section-desc">Berdasarkan analisis 2.000 review TikTok Shop, berikut rekomendasi prioritas untuk meningkatkan penjualan & kepuasan pelanggan.</p>
+
+        <!-- Recommendation 1 -->
+        <div class="rec-card rec-priority-1">
+          <div class="rec-header">
+            <span class="rec-priority-badge">#1 PRIORITAS</span>
+            <span class="rec-tag rec-tag-price">💰</span>
+          </div>
+          <h4 class="rec-title">Turunkan Hambatan Harga — <span style="color:var(--accent-cyan);">Luncurkan Varian Ekonomis</span></h4>
+          <div class="rec-body">
+            <div class="rec-row">
+              <span class="rec-label">📊 Masalah</span>
+              <span class="rec-value" id="rec1-problem">Memuat...</span>
+            </div>
+            <div class="rec-row">
+              <span class="rec-label">💡 Solusi</span>
+              <span class="rec-value">Buat <strong>varian ekonomis</strong> (ukuran kecil/travel pack/trial kit) dengan harga 40-50% lebih rendah dari produk reguler. Gunakan kemasan sederhana untuk menekan biaya produksi. Promosikan sebagai \"entry point\" untuk pelanggan baru yang ragu dengan harga premium.</span>
+            </div>
+            <div class="rec-kpi-box">
+              <div class="rec-kpi-label">🎯 KPI — Target 3 Bulan</div>
+              <div class="rec-kpi-grid">
+                <div class="rec-kpi-item">
+                  <span class="rec-kpi-metric" id="rec1-kpi1">—</span>
+                  <span class="rec-kpi-desc">Penurunan review komplain harga</span>
+                </div>
+                <div class="rec-kpi-item">
+                  <span class="rec-kpi-metric" id="rec1-kpi2">—</span>
+                  <span class="rec-kpi-desc">Kenaikan rating pembeli baru</span>
+                </div>
+                <div class="rec-kpi-item">
+                  <span class="rec-kpi-metric" id="rec1-kpi3">—</span>
+                  <span class="rec-kpi-desc">Penetrasi first-time buyer via varian ekonomis</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recommendation 2 -->
+        <div class="rec-card rec-priority-2">
+          <div class="rec-header">
+            <span class="rec-priority-badge" style="background:rgba(59,130,246,0.2);color:var(--accent-blue);">#2 HIGH IMPACT</span>
+            <span class="rec-tag rec-tag-ops">📦</span>
+          </div>
+          <h4 class="rec-title">Perbaiki Operasional Pengiriman — <span style="color:var(--accent-cyan);">Zero Defect Packaging</span></h4>
+          <div class="rec-body">
+            <div class="rec-row">
+              <span class="rec-label">📊 Masalah</span>
+              <span class="rec-value" id="rec2-problem">Memuat...</span>
+            </div>
+            <div class="rec-row">
+              <span class="rec-label">💡 Solusi</span>
+              <span class="rec-value"><strong>Standarisasi kemasan pengiriman</strong>: bubble wrap ganda + kotak kardus khusus. Audit kurir/ekspedisi — ganti mitra logistik dengan rekor pengiriman buruk. Berikan <strong>garansi kerusakan pengiriman</strong> untuk meningkatkan kepercayaan. Tambahkan <strong>QC checklist</strong> sebelum setiap pengiriman.</span>
+            </div>
+            <div class="rec-kpi-box">
+              <div class="rec-kpi-label">🎯 KPI — Target 3 Bulan</div>
+              <div class="rec-kpi-grid">
+                <div class="rec-kpi-item">
+                  <span class="rec-kpi-metric" id="rec2-kpi1">—</span>
+                  <span class="rec-kpi-desc">Penurunan review komplain operasional</span>
+                </div>
+                <div class="rec-kpi-item">
+                  <span class="rec-kpi-metric" id="rec2-kpi2">—</span>
+                  <span class="rec-kpi-desc">Rating rata-rata setelah perbaikan operasional</span>
+                </div>
+                <div class="rec-kpi-item">
+                  <span class="rec-kpi-metric" id="rec2-kpi3">—</span>
+                  <span class="rec-kpi-desc">Eliminasi false negative akibat operasional</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recommendation 3 -->
+        <div class="rec-card rec-priority-3">
+          <div class="rec-header">
+            <span class="rec-priority-badge" style="background:rgba(139,92,246,0.15);color:var(--accent-purple);">#3 STRATEGIC</span>
+            <span class="rec-tag rec-tag-rd">🔬</span>
+          </div>
+          <h4 class="rec-title">Perkuat R&D untuk Kulit Berminyak — <span style="color:var(--accent-cyan);">Formula Ringan</span></h4>
+          <div class="rec-body">
+            <div class="rec-row">
+              <span class="rec-label">📊 Masalah</span>
+              <span class="rec-value" id="rec3-problem">Memuat...</span>
+            </div>
+            <div class="rec-row">
+              <span class="rec-label">💡 Solusi</span>
+              <span class="rec-value">Kembangkan <strong>varian oil-free/gel-based</strong> dari produk best-seller (Calm Down! Moisturizer & Acne Pore Serum). Tambahkan klaim \"non-comedogenic\" dan \"oil-free\" di kemasan. Targetkan segmen kulit berminyak & kombinasi yang saat ini kurang terlayani dengan baik.</span>
+            </div>
+            <div class="rec-kpi-box">
+              <div class="rec-kpi-label">🎯 KPI — Target 6 Bulan</div>
+              <div class="rec-kpi-grid">
+                <div class="rec-kpi-item">
+                  <span class="rec-kpi-metric" id="rec3-kpi1">—</span>
+                  <span class="rec-kpi-desc">Kenaikan rating pada segmen kulit berminyak</span>
+                </div>
+                <div class="rec-kpi-item">
+                  <span class="rec-kpi-metric" id="rec3-kpi2">—</span>
+                  <span class="rec-kpi-desc">Penurunan komplain tekstur/berat</span>
+                </div>
+                <div class="rec-kpi-item">
+                  <span class="rec-kpi-metric" id="rec3-kpi3">—</span>
+                  <span class="rec-kpi-desc">Market share gain dari Skintific di segmen young adult</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Summary Roadmap -->
+      <div class="rec-roadmap">
+        <h3 class="rec-section-title">📅 Roadmap Implementasi</h3>
+        <div class="rec-roadmap-grid">
+          <div class="rec-roadmap-item">
+            <div class="rec-roadmap-phase" style="background:rgba(239,68,68,0.15);color:var(--accent-red);">Bulan 1</div>
+            <div class="rec-roadmap-desc">Audit operasional + ganti mitra logistik + standarisasi kemasan kirim</div>
+          </div>
+          <div class="rec-roadmap-arrow">→</div>
+          <div class="rec-roadmap-item">
+            <div class="rec-roadmap-phase" style="background:rgba(249,115,22,0.15);color:var(--accent-orange);">Bulan 2</div>
+            <div class="rec-roadmap-desc">Riset pasar untuk varian ekonomis + trial kit + uji formula ringan</div>
+          </div>
+          <div class="rec-roadmap-arrow">→</div>
+          <div class="rec-roadmap-item">
+            <div class="rec-roadmap-phase" style="background:rgba(34,197,94,0.15);color:var(--accent-green);">Bulan 3-6</div>
+            <div class="rec-roadmap-desc">Launch varian ekonomis + oil-free line + evaluasi KPI</div>
+          </div>
+        </div>
       </div>
     </section>
 
