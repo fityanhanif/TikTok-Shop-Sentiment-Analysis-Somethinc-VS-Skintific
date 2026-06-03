@@ -243,8 +243,7 @@ function renderProductAnalysis() {
   const somProdNames = somProducts.map(([_, v]) => _.replace('som-', '').slice(0, 20) + '...' .repeat(0));
   // Use actual names
   const somProdLabels = somProducts.map(([k, v]) => {
-    // key is product name from the data
-    return k;
+    return k.replace(/^som-/, '');
   });
   const somNegPct = somProducts.map(([_, v]) => v.negative_pct || 0);
 
@@ -274,7 +273,7 @@ function renderProductAnalysis() {
   });
 
   // 2b. Skintific product issues
-  const sknProdLabels = sknProducts.map(([k, _]) => k);
+  const sknProdLabels = sknProducts.map(([k, _]) => k.replace(/^skn-/, ''));
   const sknNegPct = sknProducts.map(([_, v]) => v.negative_pct || 0);
 
   new Chart(document.getElementById('chart-skn-product-issues'), {

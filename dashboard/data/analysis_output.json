@@ -1,6 +1,6 @@
 {
   "01_product_improvement": {
-    "Acne Pore Serum": {
+    "som-Acne Pore Serum": {
       "total_reviews": 113,
       "negative_reviews": 12,
       "negative_pct": 10.6,
@@ -53,7 +53,7 @@
         "lengket": 10
       }
     },
-    "Calm Down! Skinpair Moisturizer": {
+    "som-Calm Down! Skinpair Moisturizer": {
       "total_reviews": 128,
       "negative_reviews": 12,
       "negative_pct": 9.4,
@@ -108,7 +108,7 @@
         "lengket": 10
       }
     },
-    "Clay Mask": {
+    "som-Clay Mask": {
       "total_reviews": 123,
       "negative_reviews": 19,
       "negative_pct": 15.4,
@@ -173,7 +173,7 @@
         "lengket": 9
       }
     },
-    "Gentle Cleansing Balm": {
+    "som-Gentle Cleansing Balm": {
       "total_reviews": 134,
       "negative_reviews": 18,
       "negative_pct": 13.4,
@@ -219,7 +219,7 @@
         "lengket": 17
       }
     },
-    "Hydra Boost Moisturizer": {
+    "som-Hydra Boost Moisturizer": {
       "total_reviews": 134,
       "negative_reviews": 23,
       "negative_pct": 17.2,
@@ -281,7 +281,7 @@
         "lengket": 20
       }
     },
-    "Physical Sunscreen SPF50": {
+    "som-Physical Sunscreen SPF50": {
       "total_reviews": 118,
       "negative_reviews": 19,
       "negative_pct": 16.1,
@@ -337,7 +337,7 @@
         "lengket": 13
       }
     },
-    "Retinol Night Cream": {
+    "som-Retinol Night Cream": {
       "total_reviews": 140,
       "negative_reviews": 21,
       "negative_pct": 15.0,
@@ -394,7 +394,7 @@
         "lengket": 15
       }
     },
-    "Vitamin C Brightening Serum": {
+    "som-Vitamin C Brightening Serum": {
       "total_reviews": 110,
       "negative_reviews": 11,
       "negative_pct": 10.0,
@@ -455,7 +455,7 @@
         "lengket": 8
       }
     },
-    "5X Ceramide Barrier Repair Moisturizer": {
+    "skn-5X Ceramide Barrier Repair Moisturizer": {
       "total_reviews": 141,
       "negative_reviews": 9,
       "negative_pct": 6.4,
@@ -501,7 +501,7 @@
         "parah": 4
       }
     },
-    "Brightening Clay Mask": {
+    "skn-Brightening Clay Mask": {
       "total_reviews": 139,
       "negative_reviews": 16,
       "negative_pct": 11.5,
@@ -565,7 +565,7 @@
         "lebih": 6
       }
     },
-    "Centella Acne Patch": {
+    "skn-Centella Acne Patch": {
       "total_reviews": 121,
       "negative_reviews": 4,
       "negative_pct": 3.3,
@@ -609,7 +609,7 @@
         "mungkin": 2
       }
     },
-    "Hyaluronic Acid Toner": {
+    "skn-Hyaluronic Acid Toner": {
       "total_reviews": 110,
       "negative_reviews": 10,
       "negative_pct": 9.1,
@@ -655,7 +655,7 @@
         "butuh": 5
       }
     },
-    "Moisture Bomb": {
+    "skn-Moisture Bomb": {
       "total_reviews": 118,
       "negative_reviews": 12,
       "negative_pct": 10.2,
@@ -717,7 +717,7 @@
         "tambah": 4
       }
     },
-    "Niacinamide Serum": {
+    "skn-Niacinamide Serum": {
       "total_reviews": 121,
       "negative_reviews": 11,
       "negative_pct": 9.1,
@@ -771,7 +771,7 @@
         "produknya": 4
       }
     },
-    "Retinol Serum": {
+    "skn-Retinol Serum": {
       "total_reviews": 118,
       "negative_reviews": 15,
       "negative_pct": 12.7,
@@ -835,7 +835,7 @@
         "merah": 6
       }
     },
-    "Sunscreen Moisturizer SPF50": {
+    "skn-Sunscreen Moisturizer SPF50": {
       "total_reviews": 132,
       "negative_reviews": 12,
       "negative_pct": 9.1,
@@ -1749,6 +1749,6 @@
       "neutral": 179,
       "negative": 224
     },
-    "generated_at": "2026-06-03T15:02:52.700214"
+    "generated_at": "2026-06-03T15:25:08.766271"
   }
 }

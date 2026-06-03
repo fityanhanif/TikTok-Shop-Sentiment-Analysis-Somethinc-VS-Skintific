@@ -734,9 +734,13 @@ def main():
     som_products = analyze_01_product_improvement(reviews, brand="somethinc")
     print("  [01/10] Product Improvement Analysis (Skintific)...")
     skn_products = analyze_01_product_improvement(reviews, brand="skintific")
-    # Merge both brands together
-    som_products.update(skn_products)
-    all_analysis["01_product_improvement"] = som_products
+    # Merge both brands together with brand prefixes
+    som_products = {f"som-{k}": v for k, v in som_products.items()}
+    skn_products = {f"skn-{k}": v for k, v in skn_products.items()}
+    all_products = {}
+    all_products.update(som_products)
+    all_products.update(skn_products)
+    all_analysis["01_product_improvement"] = all_products
 
     print("  [02/10] Competitive Benchmark...")
     all_analysis["02_competitive_benchmark"] = analyze_02_competitive_benchmark(reviews)
