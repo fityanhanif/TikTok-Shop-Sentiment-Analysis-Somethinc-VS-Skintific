@@ -646,13 +646,14 @@ function render(){
       var entries=Object.entries(ops).filter(function(e){return e[1].total_mentions>0});
       var canvasId=brand==='somethinc'?'c-ops-som':'c-ops-skn';
       var color=brand==='somethinc'?C.som:C.skn;
+      var ratingLineColor='#2B6B4A'; // green contrast for rating line
       if(entries.length){
         mkChart(canvasId,'bar',
           {
             labels:entries.map(function(e){return e[0].replace(/_/g,' ')}),
             datasets:[
               {label:'Mentions',data:entries.map(function(e){return e[1].total_mentions}),backgroundColor:color,borderRadius:4,yAxisID:'y',order:1},
-              {label:'Rating',data:entries.map(function(e){return e[1].avg_rating}),borderColor:color,borderWidth:3,type:'line',tension:.3,pointRadius:4,pointBorderWidth:2,pointBackgroundColor:color,pointBorderColor:'#fff',yAxisID:'y1',order:2}
+              {label:'Rating',data:entries.map(function(e){return e[1].avg_rating}),borderColor:ratingLineColor,borderWidth:3,type:'line',tension:.3,pointRadius:4,pointBorderWidth:2,pointBackgroundColor:ratingLineColor,pointBorderColor:'#fff',yAxisID:'y1',order:2}
             ]
           },
           {
@@ -770,7 +771,7 @@ function render(){
         labels:days,
         datasets:[
           {label:'Negative %',data:days.map(function(d){return wp[d].negative_pct||0}),backgroundColor:C.neg,borderRadius:4,yAxisID:'y',order:1},
-          {label:'Reviews',data:days.map(function(d){return wp[d].total||0}),backgroundColor:C.somAlpha,borderColor:C.som,borderWidth:2,type:'line',tension:.3,pointRadius:4,pointBorderWidth:2,pointBackgroundColor:C.som,pointBorderColor:'#fff',yAxisID:'y1',order:2}
+              {label:'Reviews',data:days.map(function(d){return wp[d].total||0}),backgroundColor:'rgba(91,103,120,0.08)',borderColor:'#5B6778',borderWidth:2,type:'line',tension:.3,pointRadius:4,pointBorderWidth:2,pointBackgroundColor:'#5B6778',pointBorderColor:'#fff',yAxisID:'y1',order:2}
         ]
       },
       {
@@ -953,10 +954,11 @@ function buildFeat(data,canvasId,color){
   var labels=entries.map(function(e){return e[0].replace(/_/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase()})});
   var ratios=entries.map(function(e){return e[1].complaint_ratio||0});
   var mentions=entries.map(function(e){return e[1].total_mentions||0});
+  var lineColor='#5B6778'; // neutral gray-blue for line contrast
   mkChart(canvasId,'bar',
     {labels:labels,datasets:[
       {label:'Complaint %',data:ratios,backgroundColor:ratios.map(function(v){return v>50?C.neg:v>30?C.neu:C.pos}),borderRadius:3,yAxisID:'y',order:1},
-      {label:'Mentions',data:mentions,borderColor:color,backgroundColor:color,type:'line',tension:.3,pointRadius:4,pointBorderWidth:2,borderWidth:3,pointBackgroundColor:color,pointBorderColor:'#fff',yAxisID:'y1',order:2}
+      {label:'Mentions',data:mentions,borderColor:lineColor,backgroundColor:'rgba(91,103,120,0.08)',type:'line',tension:.3,pointRadius:4,pointBorderWidth:2,borderWidth:3,pointBackgroundColor:lineColor,pointBorderColor:'#fff',yAxisID:'y1',order:2}
     ]},
     {
       plugins:{legend:{display:true,position:'top',labels:{color:C.text,font:{size:9},boxWidth:6,usePointStyle:true}}},

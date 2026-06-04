@@ -280,6 +280,23 @@ def analyze_02_competitive_benchmark(reviews):
             complained.update(w for w in words if len(w) > 3 and w not in ['dengan', 'untuk', 'karena', 'tetapi', 'adalah'])
         top_complained = dict(complained.most_common(10))
 
+        # Most complained aspects (categories, not raw words)
+        complaint_aspects = {
+            "tekstur": ["tekstur","krim","cair","lotion","kental","berat","ringan","lengket","kasar","halus","creamy","gel","mousse"],
+            "aroma": ["wangi","aroma","bau","scent","fragrance","parfum","wewangian"],
+            "kemasan": ["kemasan","packaging","botol","tube","dus","segel","bocor","penyok","tumpah"],
+            "hasil_efek": ["hasil","efek","perubahan","glowing","cerah","lembab","kering","jerawat","breakout"],
+            "kecocokan_kulit": ["cocok","iritasi","perih","gatal","merah","bruntus","beruntusan","kemerahan"],
+            "harga": ["harga","mahal","murah","worth","pricey","ekonomis","terjangkau"],
+            "pengiriman_cs": ["lama","lambat","telat","packing","kurir","ekspedisi","bubble","cs","admin","respon"],
+            "formula_kandungan": ["formula","kandungan","bahan","ceramide","niacinamide","vitamin","spf","bahan aktif"],
+        }
+        aspect_complaints = {}
+        for asp, keywords in complaint_aspects.items():
+            count = sum(1 for r in neg if any(kw in r["text"].lower() for kw in keywords))
+            if count > 0:
+                aspect_complaints[asp] = count
+
         # Rating distribution
         rating_dist = Counter(r["rating"] for r in br)
 
@@ -292,7 +309,7 @@ def analyze_02_competitive_benchmark(reviews):
             "neutral_pct": round(sum(1 for r in br if r["sentiment_ml_label"] == "neutral") / len(br) * 100, 1) if br else 0,
             "rating_distribution": {str(k): v for k, v in sorted(rating_dist.items())},
             "most_praised_words": top_praised,
-            "most_complained_words": top_complained,
+            "most_complained_words": aspect_complaints,
         }
 
     # Sentiment gap analysis
